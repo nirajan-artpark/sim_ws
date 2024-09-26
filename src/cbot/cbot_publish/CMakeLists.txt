@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(cbot_gazebo)
+project(cbot_publish)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,17 +8,11 @@ project(cbot_gazebo)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  gazebo_plugins
-  gazebo_ros
-  gazebo_ros_control
-  cbot_control
-  cbot_description
-  xacro
-  roslaunch
+  rospy
 )
 
 ## System dependencies are found with CMake's conventions
- find_package(Boost REQUIRED COMPONENTS system)
+# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -108,11 +102,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES cbot_gazebo
-#  CATKIN_DEPENDS gazebo_plugins gazebo_ros gazebo_ros_control cbot_control cbot_description xacro
+#  LIBRARIES cbot_publish
+#  CATKIN_DEPENDS rospy
 #  DEPENDS system_lib
 )
-
 
 ###########
 ## Build ##
@@ -125,23 +118,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-
-find_package(gazebo REQUIRED)
-include_directories(${GAZEBO_INCLUDE_DIRS})
-link_directories(${GAZEBO_LIBRARY_DIRS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
-
-add_library(ActorCollisionsPlugin SHARED plugin/ActorCollisionsPlugin.cc)
-target_link_libraries(ActorCollisionsPlugin ${GAZEBO_LIBRARIES})
-
-
-install(
-  DIRECTORY launch worlds plugin models
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/cbot_gazebo.cpp
+#   src/${PROJECT_NAME}/cbot_publish.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -152,7 +131,7 @@ install(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/cbot_gazebo_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/cbot_publish_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -211,12 +190,17 @@ install(
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+install(PROGRAMS
+  src/my_broadcaster.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 #############
 ## Testing ##
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_cbot_gazebo.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_cbot_publish.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
